@@ -37,8 +37,8 @@ const Nav = () => {
   }, []);
 
   return (
-    <nav className="flex-between flex w-full mb-8 pt-3">
-      <div className="flex gap-11">
+    <nav className="flex-between flex w-full mb-8 pt-3 items-center">
+      <div className="flex gap-11 items-center">
         <Link href="/" className="flex gap-2 flex-center">
           <Image
             src="/assets/images/logo.png"
@@ -49,7 +49,7 @@ const Nav = () => {
           />
           <p className="logo_text orange_gradient">PromptBuddy</p>
         </Link>
-        <div className="cursor-pointer sm:flex hidden">
+        <div className="cursor-pointer sm:flex hidden items-center">
           <ThemeSwitch />
         </div>
       </div>

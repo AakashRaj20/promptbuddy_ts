@@ -28,6 +28,7 @@ const Profile = ({ name, desc, data }: ProfileProps) => {
   const dispatch = useAppDispatch();
   const isLoggedUserLoading = useAppSelector(loggedUserLoading);
   const isUserLoading = useAppSelector(userAuthLoading);
+  const isSavedPromptLoading = useAppSelector(savedPromptLoading);
   const savedPrompt = useAppSelector(savedPrompts);
   const loggedUserPrompt = useAppSelector(loggedUserPrompts);
   const pathName = usePathname();
@@ -38,13 +39,15 @@ const Profile = ({ name, desc, data }: ProfileProps) => {
   };
 
   const handleSavedPost = async () => {
-    setProfileData(savedPrompt);
+    //dispatch(fetchSavedPrompts({ userId: userAuth?.session?._id }));
+    setProfileData(savedPrompt.prompts);
     setActiveBtn(false);
   };
 
   useEffect(() => {
     !isUserLoading && dispatch(fetchSavedPrompts({ userId: userAuth?.session?._id }));
   }, [isUserLoading]);
+
 
   console.log({ data });
 

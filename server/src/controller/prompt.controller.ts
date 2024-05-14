@@ -18,6 +18,7 @@ export const getAllPrompts = async (req: Request, res: Response) => {
 // create a prompt
 export const createPrompt = async (req: Request, res: Response) => {
   const { userId, prompt, tag } = req.body;
+  
   try {
     const newPrompt = new Prompt({ creator: userId, prompt, tag });
     await newPrompt.save();

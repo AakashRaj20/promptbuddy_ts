@@ -6,6 +6,10 @@ import { Button } from "./ui/button";
 import { useAppSelector, useAppDispatch } from "@/redux_store/hooks";
 import { deletePromt } from "@/redux_store/slices/loggedUserPostsSlice";
 import { selectUserAuth } from "@/redux_store/slices/userAuthSlice";
+import {
+  savedPrompts,
+  removeSavedPrompt,
+} from "@/redux_store/slices/savedPromptSlice";
 import { Prompts } from "@/redux_store/slices/allPromptsSlice";
 import SocialShareBox from "./SocialShareBox";
 import { useState, useEffect } from "react";
@@ -19,20 +23,36 @@ interface PromptCardProps {
 
 const PromptCard = ({ post }: PromptCardProps) => {
   const userAuth = useAppSelector(selectUserAuth);
+  const savedPrompt = useAppSelector(savedPrompts);
   const pathName = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [copied, setCopied] = useState<boolean | string>();
+  const [isSaved, setIsSaved] = useState<boolean>(false);
   const [isUpVoted, setIsUpVoted] = useState<boolean>(false);
   const [voteCount, setVoteCount] = useState<number>(post.votes);
 
   const promptUrl = `${window.location.origin}/prompt/${post._id}`;
+  console.log({ savedPrompt });
 
   useEffect(() => {
     const voteStatus =
       userAuth && post?.votedBy?.some((vote) => vote === userAuth.session?._id);
+    console.log({ voteStatus });
+
     setIsUpVoted(voteStatus);
   }, [userAuth, post]);
+
+  useEffect(() => {
+    const saveStatus =
+      userAuth &&
+      savedPrompt?.prompts?.some((prompt) => prompt._id === post._id);
+    setIsSaved(saveStatus);
+  }, [userAuth, post, savedPrompt]);
+
+  useEffect(() => {
+    dispatch(removeSavedPrompt({ promptId: post._id }));
+  }, [post._id]);
 
   const handleCopy = () => {
     setCopied(post.prompt);
@@ -50,18 +70,37 @@ const PromptCard = ({ post }: PromptCardProps) => {
         setIsUpVoted(res.data.votedBy.includes(userAuth.session?._id));
       }
       console.log(res.data);
-
       return res.data;
     } catch (error) {
       console.log(error);
     }
   };
 
-  console.log(isUpVoted);
+  const handleSave = async () => {
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/user/${userAuth?.session?._id}/prompt/${post._id}/save-unsave`
+      );
+      if (response.status === 200) {
+        setIsSaved(!isSaved);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+   useEffect(() => {
+     // Dispatch removeSavedPrompt for prompts that are not saved anymore
+     if (!isSaved) {
+       dispatch(removeSavedPrompt({ promptId: post._id }));
+     }
+   }, [isSaved, post._id, dispatch]);
+
+  console.log({ isSaved });
 
   const handleEdit = async () => {
     router.push(`/update-prompt?promptId=${post._id}`);
-  }
+  };
 
   const handleDelete = async () => {
     dispatch(deletePromt(post._id));
@@ -114,9 +153,9 @@ const PromptCard = ({ post }: PromptCardProps) => {
             <Image
               onClick={handleVote}
               src={
-                isUpVoted
-                  ? "/assets/icons/thumbsUp.svg"
-                  : "/assets/icons/thumbUp.svg"
+                !isUpVoted || voteCount === 0
+                  ? "/assets/icons/thumbUp.svg"
+                  : "/assets/icons/thumbsUp.svg"
               }
               alt="thumbsUp_icon"
               width={40}
@@ -142,15 +181,12 @@ const PromptCard = ({ post }: PromptCardProps) => {
         </div>
 
         {userAuth && (
-          <div
-            className="copy_btn"
-            //onClick={handleToggleSave}
-          >
+          <div className="copy_btn" onClick={handleSave}>
             <Image
               src={
-                //isSaved === true
-                //  ? "/assets/icons/saved.svg"
-                "/assets/icons/save.svg"
+                isSaved === true
+                  ? "/assets/icons/saved.svg"
+                  : "/assets/icons/save.svg"
               }
               alt="save_icon"
               width={20}
@@ -164,14 +200,14 @@ const PromptCard = ({ post }: PromptCardProps) => {
         pathName === "/profile" && (
           <div className="mt-5 flex justify-between border-t border-gray-400 pt-5">
             <Button
-              className="font-inter text-sm green_gradient rounded-full px-7"
+              className="font-inter text-sm green_gradient rounded-full px-7 hover:border-green-400"
               variant="outline"
               onClick={handleEdit}
             >
               Edit
             </Button>
             <Button
-              className="font-inter text-sm orange_gradient rounded-full px-7"
+              className="font-inter text-sm orange_gradient rounded-full px-7 hover:border-orange-400"
               onClick={() => handleDelete()}
               variant="outline"
             >

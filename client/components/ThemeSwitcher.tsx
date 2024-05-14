@@ -20,7 +20,7 @@ const ThemeSwitch = () => {
 
   return (
     <Switch
-      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
       // src={
       //   resolvedTheme === "dark"
       //     ? "/assets/icons/light_mode.svg"

@@ -14,6 +14,7 @@ const CreatePrompt = () => {
   const [submitting, setIsSubmitting] = useState(false);
   const [post, setPost] = useState({ prompt: "", tag: "" });
 
+
   const createPrompt = async () => {
     setIsSubmitting(true);
 
@@ -21,10 +22,10 @@ const CreatePrompt = () => {
       const response = await axios.post(`${baseUrl}/api/create-prompt`, {
         prompt: post.prompt,
         tag: post.tag,
-        creator: userAuth.session?._id,
+        userId: userAuth.session?._id,
       });
 
-      if (response.statusText === "OK") {
+      if (response.status === 201) {
         router.push("/");
       }
     } catch (error) {
