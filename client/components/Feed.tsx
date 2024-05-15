@@ -20,7 +20,7 @@ const Feed = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchSavedPrompts({ userId: userAuth.session?._id }));
+    dispatch(fetchSavedPrompts({ userId: userAuth?.session?._id }));
   },[userAuth?.session?._id])
 
   return (

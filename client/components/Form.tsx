@@ -28,7 +28,13 @@ const formSchema = z.object({
   prompt: z.string().min(20, {
     message: "AI Prompt must be at least 20 characters.",
   }),
-  tag: z.string().min(4, { message: "Tag must be at least 2 characters." }),
+  tag: z
+    .string()
+    .min(4, { message: "Tag must be at least 4 characters." })
+    .regex(/^#[A-Za-z0-9#]*[A-Za-z0-9]+$/, {
+      message:
+        "Tag must start with #, can contain # within, and only alphanumeric characters. It should not end with a special character.",
+    }),
 });
 
 const FormUI = ({
