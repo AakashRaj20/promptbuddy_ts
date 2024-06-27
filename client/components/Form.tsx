@@ -62,7 +62,7 @@ const FormUI = ({
         imagination run wild with any AI-powered platform
       </p>
 
-      <div className="w-full grid grid-cols-2">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-2">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
@@ -132,7 +132,7 @@ const FormUI = ({
             </div>
           </form>
         </Form>
-        <div className="m-auto">
+        <div className="m-auto hidden lg:block">
           <Image
             src="/assets/images/form.gif"
             alt="form_image"

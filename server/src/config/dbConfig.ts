@@ -6,7 +6,7 @@ dotenv.config();
 
 mongoose.Promise = global.Promise;
 
-const mongouri: string = process.env.MONGODB_URI_LOCAL as string;
+const mongouri: string = process.env.MONGODB_URI as string;
 
 const dbOptions = {
   useNewUrlParser: true,

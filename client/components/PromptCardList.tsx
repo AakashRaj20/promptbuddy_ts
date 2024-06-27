@@ -7,9 +7,10 @@ import PromptCard from "./PromptCard";
 
 interface PromptCardProps {
   data: Prompts[];
+  handleTagClick: (tagName: string) => void;
 }
 
-const PromptCardList = ({data} : PromptCardProps) => {
+const PromptCardList = ({data, handleTagClick} : PromptCardProps) => {
   const isPromptLoading = useAppSelector(selectAllPromptsLoading);
   return isPromptLoading ? <Loader /> : (
     <div className="mt-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
@@ -18,7 +19,7 @@ const PromptCardList = ({data} : PromptCardProps) => {
           <PromptCard
             key={post._id}
             post={post}
-            //handleTagClick={handleTagClick}
+            handleTagClick={handleTagClick}
           />
         ))}
     </div>

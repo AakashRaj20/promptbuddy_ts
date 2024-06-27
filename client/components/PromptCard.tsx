@@ -19,9 +19,10 @@ import { deletePromptApi } from "@/server_action/deleteApi";
 
 interface PromptCardProps {
   post: Prompts;
+  handleTagClick?: (tagName: string) => void;
 }
 
-const PromptCard = ({ post }: PromptCardProps) => {
+const PromptCard = ({ post, handleTagClick }: PromptCardProps) => {
   const userAuth = useAppSelector(selectUserAuth);
   const savedPrompt = useAppSelector(savedPrompts);
   const pathName = usePathname();
@@ -32,8 +33,8 @@ const PromptCard = ({ post }: PromptCardProps) => {
   const [isUpVoted, setIsUpVoted] = useState<boolean>(false);
   const [voteCount, setVoteCount] = useState<number>(post.votes);
 
-  const promptUrl = `${window.location.origin}/prompt/${post._id}`;
-  console.log({ savedPrompt });
+  const promptUrl = `${window.location.origin}/prompt/${post._id}?prompt=${post.prompt}?username=${post.creator?.username}$userimage=${post.creator?.image}`;
+  console.log({ post });
 
   useEffect(() => {
     const voteStatus =
@@ -109,9 +110,9 @@ const PromptCard = ({ post }: PromptCardProps) => {
 
   const handleProfileClick = () => {
     if (post?.creator?._id === userAuth.session._id)
-      return router.push("/profile");
+      return router.push(`/profile?username=${userAuth.session.username}&?userimage=${userAuth.session.image}`);
 
-    router.push(`/profile/${post.creator?._id}?name=${post.creator?.username}`);
+    router.push(`/profile/${post.creator?._id}?name=${post.creator?.username}&?image=${post.creator?.image}`);
   };
 
   return (
@@ -142,7 +143,7 @@ const PromptCard = ({ post }: PromptCardProps) => {
       </p>
       <p
         className="font-inter text-sm blue_gradient cursor-pointer"
-        //onClick={() => handleTagClick && handleTagClick(post.tag)}
+        onClick={() => handleTagClick && handleTagClick(post.tag)}
       >
         {post.tag}
       </p>

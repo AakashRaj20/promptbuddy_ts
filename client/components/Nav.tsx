@@ -76,19 +76,20 @@ const Nav = () => {
               <span className="relative z-10">Sign Out</span>
             </Button>
 
-            <Link href="/profile">
-              <Image
-                src={
-                  userAuth
-                    ? userAuth.session.image
-                    : "/assets/icons/profile.svg"
-                }
-                width={37}
-                height={37}
-                className="rounded-full"
-                alt="profile"
-              />
-            </Link>
+            <Image
+              src={
+                userAuth ? userAuth.session.image : "/assets/icons/profile.svg"
+              }
+              width={37}
+              height={37}
+              className="rounded-full cursor-pointer"
+              alt="profile"
+              onClick={() =>
+                router.push(
+                  `/profile?username=${userAuth.session.username}?userimage=${userAuth.session.image}`
+                )
+              }
+            />
           </div>
         ) : (
           <>

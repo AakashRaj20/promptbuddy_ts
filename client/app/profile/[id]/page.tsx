@@ -14,6 +14,7 @@ const UserProfile = ({ params }: any) => {
   const param = useSearchParams();
   const userName = param.get("name");
   const loggedPrompt = useAppSelector(loggedUserPrompts);
+console.log({userName});
 
   useEffect(() => {
     dispatch(fetchLoggedUserPosts({ userId: params.id }));
