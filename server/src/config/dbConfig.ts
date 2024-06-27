@@ -7,10 +7,11 @@ dotenv.config();
 mongoose.Promise = global.Promise;
 
 const mongouri: string = process.env.MONGODB_URI as string;
+const collectionName: string = process.env.COLLECTION_NAME as string;
 
 const dbOptions = {
   useNewUrlParser: true,
-  dbName: "share_prompt_local",
+  dbName: collectionName,
 } as ConnectOptions;
 
 export const connectDb = () => {
