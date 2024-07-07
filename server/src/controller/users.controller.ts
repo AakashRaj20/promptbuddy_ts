@@ -46,7 +46,7 @@ passport.use(
 passport.use(
   new GithubStrategy(
     {
-      clientID: GITHUB_CLIENT_ID,
+      clientID: "Ov23liBFMMmmkCQoCgsc",
       clientSecret: GITHUB_CLIENT_SECRET,
       callbackURL: "http://localhost:7000/auth/github/callback",
     },
