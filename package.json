@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "precommit:server": "cd server && npm run lint && npm run test"
+  },
+  "devDependencies": {
+    "pre-commit": "^1.2.2"
+  },
+  "pre-commit": [
+    "precommit:server"
+  ]
+}
