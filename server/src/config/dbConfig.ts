@@ -16,7 +16,7 @@ const dbOptions = {
 
 export const connectDb = () => {
   mongoose
-    .connect(mongouri, dbOptions)
+    .connect("mongodb+srv://aakash:2620@cluster0.p9chr7f.mongodb.net/?retryWrites=true&w=majority", dbOptions)
     .then(() => {
       registerModels();
       console.log("Database Connected Successfully!!");
