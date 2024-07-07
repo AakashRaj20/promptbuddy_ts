@@ -4,7 +4,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GithubStrategy } from "passport-github2";
 import User from "../models/users";
 import * as dotenv from "dotenv";
-import { Cookie } from "express-session";
+
 
 dotenv.config();
 
@@ -18,7 +18,7 @@ const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET as string;
 passport.use(
   new GoogleStrategy(
     {
-      clientID: GOOGLE_CLIENT_ID,
+      clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: "http://localhost:7000/auth/google/callback",
       state: true,
