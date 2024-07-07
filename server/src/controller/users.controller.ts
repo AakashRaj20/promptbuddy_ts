@@ -50,7 +50,7 @@ passport.use(
       clientSecret: GITHUB_CLIENT_SECRET,
       callbackURL: "http://localhost:7000/auth/github/callback",
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (profile: any, done: any) => {
       const userExists = await User.findOne({
         email: profile.emails?.[0].value,
       });
