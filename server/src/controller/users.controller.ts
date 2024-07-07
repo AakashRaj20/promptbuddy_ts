@@ -18,7 +18,7 @@ const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET as string;
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientID: "546902329143-uabjgb2ho4ipj12hh5kuqju7p6cjd7ck.apps.googleusercontent.com",
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: "http://localhost:7000/auth/google/callback",
       state: true,
