@@ -14,13 +14,16 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET as string;
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID as string;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET as string;
 
+const CLIENT_URL = process.env.CLIENT_URL as string;
+const CALLBACK_URL = process.env.CALLBACK_URL as string;
+
 // Configure Google OAuth 2.0 strategy
 passport.use(
   new GoogleStrategy(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:7000/auth/google/callback",
+      callbackURL: `${CALLBACK_URL}/auth/google/callback`,
       state: true,
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -48,7 +51,7 @@ passport.use(
     {
       clientID: GITHUB_CLIENT_ID,
       clientSecret: GITHUB_CLIENT_SECRET,
-      callbackURL: "http://localhost:7000/auth/github/callback",
+      callbackURL: `${CALLBACK_URL}/auth/google/callback`,
     },
     async (profile: any, done: any) => {
       const userExists = await User.findOne({
@@ -91,9 +94,9 @@ export const googleAuthCallbackController = async (
   res: Response
 ) => {
   await passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000",
+    failureRedirect: CLIENT_URL,
   })(req, res, () => {
-    res.redirect("http://localhost:3000");
+    res.redirect(CLIENT_URL);
   });
 };
 
@@ -102,9 +105,9 @@ export const githubAuthCallbackController = async (
   res: Response
 ) => {
   await passport.authenticate("github", {
-    failureRedirect: "http://localhost:3000",
+    failureRedirect: CLIENT_URL,
   })(req, res, () => {
-    res.redirect("http://localhost:3000");
+    res.redirect(CLIENT_URL);
   });
 };
 
@@ -125,6 +128,6 @@ export const logoutController = (req: Request, res: Response) => {
     if (error) {
       res.status(500).json({ message: "Something went wrong" });
     }
-    res.redirect("http://localhost:3000");
+    res.redirect(CLIENT_URL);
   });
 };
