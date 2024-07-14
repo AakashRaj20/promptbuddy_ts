@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -7,14 +7,13 @@ import { Mail, Github } from "lucide-react";
 import { baseUrl } from "@/redux_store/baseUrl";
 
 const page = () => {
-
   const handleGoogleSignIn = () => {
     window.open(`${baseUrl}/auth/google`, "_self");
   };
 
   const handleGithubSignIn = () => {
-    window.open(`${baseUrl}/auth/github`)
-  }
+    window.open(`${baseUrl}/auth/github`);
+  };
 
   return (
     <section className="grid grid-cols-1 lg:grid-cols-2 w-full border-2 dark:border-none rounded-lg">
