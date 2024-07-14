@@ -7,6 +7,8 @@ import { Mail, Github } from "lucide-react";
 import { baseUrl } from "@/redux_store/baseUrl";
 
 const page = () => {
+  console.log(baseUrl);
+  
   const handleGoogleSignIn = () => {
     window.open(`${baseUrl}/auth/google`, "_self");
   };
