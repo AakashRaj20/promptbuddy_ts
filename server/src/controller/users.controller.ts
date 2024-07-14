@@ -113,7 +113,7 @@ export const githubAuthCallbackController = async (
 
 export const userDetailController = async (req: Request, res: Response) => {
   try {
-    console.log(req.user);
+    console.log(req);
     
     if (req.user) {
       return res.status(200).json({ session: req.user, Cookie: req.cookies });
