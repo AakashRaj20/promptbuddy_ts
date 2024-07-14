@@ -56,7 +56,7 @@ const Nav = () => {
 
       {/* Desktop Navigation */}
       <div className="sm:flex hidden">
-        {userAuth && pathName !== "/signin" ? (
+        {userAuth  ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/create-prompt">
               <Button
