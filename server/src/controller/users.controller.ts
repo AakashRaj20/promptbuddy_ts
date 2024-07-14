@@ -51,7 +51,7 @@ passport.use(
     {
       clientID: GITHUB_CLIENT_ID,
       clientSecret: GITHUB_CLIENT_SECRET,
-      callbackURL: `${CALLBACK_URL}/auth/google/callback`,
+      callbackURL: `${CALLBACK_URL}/auth/github/callback`,
     },
     async (profile: any, done: any) => {
       const userExists = await User.findOne({
@@ -73,12 +73,18 @@ passport.use(
   )
 );
 
-passport.serializeUser((user, done) => {
-  done(null, user);
+passport.serializeUser((user: any, done) => {
+  done(null, user.id);
 });
 
-passport.deserializeUser((user, done) => {
-  user && done(null, user);
+passport.deserializeUser((id: string, done) => {
+  User.findById(id)
+    .then((user) => {
+      done(null, user);
+    })
+    .catch((err) => {
+      done(err, null);
+    });
 });
 
 export const googleAuthController = (req: Request, res: Response) => {
@@ -113,7 +119,7 @@ export const githubAuthCallbackController = async (
 
 export const userDetailController = async (req: Request, res: Response) => {
   try {
-    console.log(req);
+    console.log(req.user);
     
     if (req.user) {
       return res.status(200).json({ session: req.user, Cookie: req.cookies });
