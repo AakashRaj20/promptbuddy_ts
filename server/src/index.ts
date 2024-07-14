@@ -11,6 +11,7 @@ import userRouter from "./routes/usersRouter";
 import helmet from "helmet";
 import passport from "passport";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 
 dotenv.config();
 
@@ -37,11 +38,24 @@ app.use(
   })
 );
 
+// app.use(
+//   session({
+//     resave: false,
+//     saveUninitialized: true,
+//     secret: "SECRET",
+//   })
+// );
+
 app.use(
   session({
+    secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
-    secret: "SECRET",
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
   })
 );
 
