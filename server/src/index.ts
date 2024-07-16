@@ -38,14 +38,6 @@ app.use(
   })
 );
 
-// app.use(
-//   session({
-//     resave: false,
-//     saveUninitialized: true,
-//     secret: "SECRET",
-//   })
-// );
-
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
