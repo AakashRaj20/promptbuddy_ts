@@ -5,7 +5,6 @@ import { Strategy as GithubStrategy } from "passport-github2";
 import User from "../models/users";
 import * as dotenv from "dotenv";
 
-
 dotenv.config();
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
@@ -119,19 +118,15 @@ export const githubAuthCallbackController = async (
 
 export const userDetailController = async (req: Request, res: Response) => {
   try {
-    // console.log(req.user + " user");
-    // console.log(req.cookies + " cookies");
-    console.log(req.session?.passport) + " session";
-    //console.log(req.isAuthenticated());
-    
-     return res.status(200).json({ session: req.session?.passport, Cookie: req.cookies });
-    
-    // if (req.user) {
-    //   return res.status(200).json({ session: req.user, Cookie: req.cookies });
-    // } else {
-    //   return res.status(401).json({ message: "You are not logged in" });
-    // }
+    console.log(req.user);
+
+    if (req.isAuthenticated() && req.user) {
+      return res.status(200).json({ session: req.user });
+    } else {
+      return res.status(401).json({ message: "You are not logged in" });
+    }
   } catch (error) {
+    console.error("Error in userDetailController:", error);
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
