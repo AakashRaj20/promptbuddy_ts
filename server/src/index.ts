@@ -40,7 +40,7 @@ app.use(
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: [process.env.SESSION_SECRET],
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
@@ -58,6 +58,8 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 
 app.use(passport.session());
+
+app.use(passport.authenticate("session"))
 
 app.use(express.json());
 

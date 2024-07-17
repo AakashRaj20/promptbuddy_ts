@@ -119,19 +119,18 @@ export const githubAuthCallbackController = async (
 
 export const userDetailController = async (req: Request, res: Response) => {
   try {
-    console.log(req.user + " user");
-    console.log(req.cookies + " cookies");
-    console.log(req.session) + " session";
-    console.log(req.isAuthenticated());
+    // console.log(req.user + " user");
+    // console.log(req.cookies + " cookies");
+    console.log(req.session?.passport) + " session";
+    //console.log(req.isAuthenticated());
     
+     return res.status(200).json({ session: req.session?.passport, Cookie: req.cookies });
     
-    
-    
-    if (req.user) {
-      return res.status(200).json({ session: req.user, Cookie: req.cookies });
-    } else {
-      return res.status(401).json({ message: "You are not logged in" });
-    }
+    // if (req.user) {
+    //   return res.status(200).json({ session: req.user, Cookie: req.cookies });
+    // } else {
+    //   return res.status(401).json({ message: "You are not logged in" });
+    // }
   } catch (error) {
     return res.status(500).json({ message: "Something went wrong" });
   }

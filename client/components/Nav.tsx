@@ -32,6 +32,9 @@ const Nav = () => {
 
   const pathName = usePathname();
 
+      console.log(userAuth ? userAuth.session : "No user");
+
+
   useEffect(() => {
     dispatch(fetchUserAuth());
   }, []);
@@ -53,10 +56,9 @@ const Nav = () => {
           <ThemeSwitch />
         </div>
       </div>
-
       {/* Desktop Navigation */}
       <div className="sm:flex hidden">
-        {userAuth  ? (
+        {userAuth.session ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/create-prompt">
               <Button
@@ -78,7 +80,7 @@ const Nav = () => {
 
             <Image
               src={
-                userAuth ? userAuth.session.image : "/assets/icons/profile.svg"
+                userAuth ? userAuth.session?.image : "/assets/icons/profile.svg"
               }
               width={37}
               height={37}
@@ -105,7 +107,6 @@ const Nav = () => {
           </>
         )}
       </div>
-
       {/* Mobile Navigation */}
       <div className="sm:hidden flex relative">
         {userAuth ? (

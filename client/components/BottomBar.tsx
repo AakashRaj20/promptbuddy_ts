@@ -43,7 +43,7 @@ const Bottombar = () => {
         <Link href="/profile" className="bottombar_image">
           <Image
             src={
-              userAuth ? userAuth.session.image : "/assets/icons/profile.svg"
+              userAuth ? userAuth.session?.image : "/assets/icons/profile.svg"
             }
             alt="Profile"
             width={24}

@@ -197,7 +197,7 @@ const PromptCard = ({ post, handleTagClick }: PromptCardProps) => {
         )}
       </div>
 
-      {userAuth?.session._id === post.creator?._id &&
+      {userAuth?.session?._id === post.creator?._id &&
         pathName === "/profile" && (
           <div className="mt-5 flex justify-between border-t border-gray-400 pt-5">
             <Button
