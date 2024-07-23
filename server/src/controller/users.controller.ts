@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import passport from "passport";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import passportGoogle from "passport-google-oauth20";
 import { Strategy as GithubStrategy } from "passport-github2";
 import User from "../models/users";
 import * as dotenv from "dotenv";
@@ -15,6 +15,8 @@ const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET as string;
 
 const CLIENT_URL = process.env.CLIENT_URL as string;
 const CALLBACK_URL = process.env.CALLBACK_URL as string;
+
+const GoogleStrategy = passportGoogle.Strategy;
 
 // Configure Google OAuth 2.0 strategy
 passport.use(
@@ -76,14 +78,20 @@ passport.serializeUser((user: any, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((id: string, done) => {
-  User.findById(id)
-    .then((user) => {
-      done(null, user);
-    })
-    .catch((err) => {
-      done(err, null);
-    });
+passport.deserializeUser(async (id: string, done) => {
+  // User.findById(id)
+  //   .then((user) => {
+  //     done(null, user);
+  //   })
+  //   .catch((err) => {
+  //     done(err, null);
+  //   });
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (error) {
+    console.error("Error in deserializeUser:", error);
+  }
 });
 
 export const googleAuthController = (req: Request, res: Response) => {
