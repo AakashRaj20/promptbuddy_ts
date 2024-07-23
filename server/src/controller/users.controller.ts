@@ -25,7 +25,6 @@ passport.use(
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: `${CALLBACK_URL}/auth/google/callback`,
-
     },
     async (accessToken, refreshToken, profile, done) => {
       const userExists = await User.findOne({
@@ -75,6 +74,8 @@ passport.use(
 );
 
 passport.serializeUser((user: any, done) => {
+  console.log("serialize user = " + user);
+
   done(null, user.id);
 });
 
@@ -89,7 +90,7 @@ passport.deserializeUser(async (id: string, done) => {
   try {
     const user = await User.findById(id);
     console.log(id + " = userid");
-    
+
     done(null, user);
   } catch (error) {
     console.error("Error in deserializeUser:", error);
@@ -128,7 +129,7 @@ export const githubAuthCallbackController = async (
 
 export const userDetailController = async (req: Request, res: Response) => {
   try {
-    console.log(req.user);
+    console.log("request user" + req.user);
 
     if (req.isAuthenticated() && req.user) {
       return res.status(200).json({ session: req.user });
