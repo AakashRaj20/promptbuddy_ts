@@ -4,6 +4,7 @@ import passportGoogle from "passport-google-oauth20";
 import { Strategy as GithubStrategy } from "passport-github2";
 import User from "../models/users";
 import * as dotenv from "dotenv";
+import { log } from "console";
 
 dotenv.config();
 
@@ -88,6 +89,7 @@ passport.deserializeUser(async (id: string, done) => {
   //     done(err, null);
   //   });
   try {
+    console.log("deserialize user = " + id);
     const user = await User.findById(id);
     console.log(id + " = userid");
 
@@ -147,6 +149,11 @@ export const logoutController = (req: Request, res: Response) => {
     if (error) {
       res.status(500).json({ message: "Something went wrong" });
     }
+    req.session.destroy((error) => {
+      if (error) {
+        res.status(500).json({ message: "Something went wrong" });
+      }
+    });
     res.redirect(CLIENT_URL);
   });
 };
