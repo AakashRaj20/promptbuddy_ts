@@ -25,7 +25,7 @@ passport.use(
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: `${CALLBACK_URL}/auth/google/callback`,
-      
+
     },
     async (accessToken, refreshToken, profile, done) => {
       const userExists = await User.findOne({
@@ -88,6 +88,8 @@ passport.deserializeUser(async (id: string, done) => {
   //   });
   try {
     const user = await User.findById(id);
+    console.log(id + " = userid");
+    
     done(null, user);
   } catch (error) {
     console.error("Error in deserializeUser:", error);

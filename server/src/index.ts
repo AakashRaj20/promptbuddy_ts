@@ -11,6 +11,7 @@ import userRouter from "./routes/usersRouter";
 import helmet from "helmet";
 import passport from "passport";
 import session from "express-session";
+import cookieSession from "cookie-session";
 import MongoStore from "connect-mongo";
 
 dotenv.config();
