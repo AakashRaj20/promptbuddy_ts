@@ -26,6 +26,7 @@ passport.use(
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: `${CALLBACK_URL}/auth/google/callback`,
+      state: true,
     },
     async (accessToken, refreshToken, profile, done) => {
       const userExists = await User.findOne({
@@ -131,7 +132,7 @@ export const githubAuthCallbackController = async (
 
 export const userDetailController = async (req: Request, res: Response) => {
   try {
-    console.log("request user" + req.user);
+    console.log("request user" + req.session);
 
     if (req.isAuthenticated() && req.user) {
       return res.status(200).json({ session: req.user });

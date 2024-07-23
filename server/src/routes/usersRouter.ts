@@ -19,12 +19,18 @@ userRouter.get(
 );
 userRouter.get(
   "/google/callback",
-  passport.authenticate("google", { session: true }),
-  googleAuthCallbackController
+  passport.authenticate("google", { failureRedirect: "http:localhost:3000" }),
+  (req, res) => {
+    res.redirect("http://localhost:3000");
+  }
 );
 userRouter.get("/github", githubAuthController);
 userRouter.get("/github/callback", githubAuthCallbackController);
-userRouter.get("/signin/success", userDetailController);
+userRouter.get(
+  "/signin/success",
+  passport.authenticate("google"),
+  userDetailController
+);
 userRouter.get("/logout", logoutController);
 
 export default userRouter;
