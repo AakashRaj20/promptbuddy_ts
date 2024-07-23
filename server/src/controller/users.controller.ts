@@ -26,6 +26,7 @@ passport.use(
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: `${CALLBACK_URL}/auth/google/callback`,
       state: true,
+      passReqToCallback: true,
     },
     async (accessToken, refreshToken, profile, done) => {
       const userExists = await User.findOne({
