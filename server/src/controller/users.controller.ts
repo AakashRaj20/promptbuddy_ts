@@ -26,7 +26,8 @@ passport.use(
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: `${CALLBACK_URL}/auth/google/callback`,
-      state: true,
+      //state: true,
+      //passReqToCallback: true,
     },
     async (accessToken, refreshToken, profile, done) => {
       const userExists = await User.findOne({
@@ -77,26 +78,40 @@ passport.use(
 
 passport.serializeUser((user: any, done) => {
   console.log("serialize user = " + user);
-
-  done(null, user.id);
+  done(null, user.email);
 });
 
-passport.deserializeUser(async (id: string, done) => {
-  // User.findById(id)
-  //   .then((user) => {
-  //     done(null, user);
-  //   })
-  //   .catch((err) => {
-  //     done(err, null);
-  //   });
-  try {
-    console.log("deserialize user = " + id);
-    const user = await User.findById(id);
-    console.log(id + " = userid");
+// passport.deserializeUser(async (id: string, done) => {
+//   // User.findById(id)
+//   //   .then((user) => {
+//   //     done(null, user);
+//   //   })
+//   //   .catch((err) => {
+//   //     done(err, null);
+//   //   });
+//   try {
+//     console.log("deserialize user = " + id);
+//     const user = await User.findOne({id});
+//     console.log(id + " = userid");
 
-    done(null, user);
+//     done(null, user);
+//   } catch (error) {
+//     console.error("Error in deserializeUser:", error);
+//   }
+// });
+passport.deserializeUser(async (email: string, done) => {
+  console.log("deserialize user email = " + email);
+  try {
+    const user = await User.findOne({ email: email });
+    console.log("Deserialized user:", user);
+    if (user) {
+      return done(null, user); 
+    } else {
+      return done(null, false);
+    }
   } catch (error) {
     console.error("Error in deserializeUser:", error);
+    return done(error, null);
   }
 });
 
@@ -132,9 +147,15 @@ export const githubAuthCallbackController = async (
 
 export const userDetailController = async (req: Request, res: Response) => {
   try {
-    console.log("request user" + req.session);
+    console.log("request session:", JSON.stringify(req.session, null, 2));
+    console.log("isAuthenticated:", req.isAuthenticated());
+    console.log("req.user:", req.user);
 
     if (req.isAuthenticated() && req.user) {
+      console.log(req.isAuthenticated());
+      
+      console.log("user = " + req.user);
+      
       return res.status(200).json({ session: req.user });
     } else {
       return res.status(401).json({ message: "You are not logged in" });
@@ -155,6 +176,6 @@ export const logoutController = (req: Request, res: Response) => {
         res.status(500).json({ message: "Something went wrong" });
       }
     });
-    res.redirect(CLIENT_URL);
+    //res.redirect(CLIENT_URL);
   });
 };

@@ -34,13 +34,14 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: "*",
+    origin: process.env.CLIENT_URL as string,
     credentials: true,
   })
 );
 
 app.use(
   session({
+    name: "promptBuddy",
     secret: [process.env.SESSION_SECRET],
     resave: false,
     saveUninitialized: false,
@@ -48,6 +49,7 @@ app.use(
     cookie: {
       //secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      //sameSite: "none",
     },
   })
 );
@@ -60,7 +62,7 @@ app.use(passport.initialize());
 
 app.use(passport.session());
 
-app.use(passport.authenticate("session"))
+app.use(passport.authenticate("session"));
 
 app.use(express.json());
 
@@ -71,7 +73,6 @@ app.use("/auth", userRouter);
 /**
  * Server Activation
  */
-
 
 connectDb();
 

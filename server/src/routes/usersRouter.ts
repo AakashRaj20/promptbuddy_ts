@@ -28,9 +28,8 @@ userRouter.get("/github", githubAuthController);
 userRouter.get("/github/callback", githubAuthCallbackController);
 userRouter.get(
   "/signin/success",
-  passport.authenticate("google"),
   userDetailController
 );
-userRouter.get("/logout", logoutController);
+userRouter.post("/logout", logoutController);
 
 export default userRouter;

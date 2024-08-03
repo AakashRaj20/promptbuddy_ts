@@ -14,6 +14,7 @@ import {
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useEffect } from "react";
+import axios from "axios";
 
 const Nav = () => {
   const userAuth = useAppSelector(selectUserAuth);
@@ -27,7 +28,13 @@ const Nav = () => {
   };
 
   const handleLogout = async () => {
-    window.open(`${baseUrl}/auth/logout`, "_self");
+    try {
+      const res = await axios.post(`${baseUrl}/auth/logout`);
+      console.log(res.data);
+      router.push("/sigin")
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const pathName = usePathname();
