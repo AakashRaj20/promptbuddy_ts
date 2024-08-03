@@ -54,6 +54,8 @@ passport.use(
 );
 
 passport.serializeUser((user: any, done) => {
+  console.log("Serializing user:", user);
+  
   done(null, user._id); // Use MongoDB _id
 });
 
