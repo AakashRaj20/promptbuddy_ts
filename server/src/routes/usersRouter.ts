@@ -17,16 +17,14 @@ userRouter.get(
 
 userRouter.get(
   "/google/callback",
-  passport.authenticate("google"),
-  (req: Request, res: Response) => {
-    res.redirect(process.env.CLIENT_URL as string);
-  }
+  passport.authenticate("google", {
+    successRedirect: process.env.CLIENT_URL as string,
+    failureRedirect: `${process.env.CLIENT_URL as string}/signin`,
+  })
 );
 
 userRouter.get("/logout", logout);
 
 userRouter.get("/signin/success", userDetail);
-
-
 
 export default userRouter;
