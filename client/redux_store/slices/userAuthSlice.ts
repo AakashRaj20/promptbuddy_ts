@@ -35,10 +35,10 @@ export const fetchUserAuth = createAsyncThunk(
     try {
       const response = await axios.get(`${baseUrl}/auth/signin/success`, {
         withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": true,
-        },
+        // headers: {
+        //   "Content-Type": "application/json",
+        //   "Access-Control-Allow-Origin": true,
+        // },
       });
       return response.data;
     } catch (error) {

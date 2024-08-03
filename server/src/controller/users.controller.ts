@@ -102,6 +102,12 @@ export const logout = (req: Request, res: Response) => {
 export const userDetail = async (req: Request, res: Response) => {
   try {
     console.log("User details:", req.user);
+    console.log("Is authenticated:", req.isAuthenticated());
+    console.log("Session ID:", req.sessionID);
+    console.log("Session object:", req.session);
+    console.log("Session cookie:", req.session?.cookie);
+    console.log(req.cookies);
+    
     
     if (req.isAuthenticated()) {
       return res.status(200).json({"session": req.user});
