@@ -54,7 +54,7 @@ const sessionOptions: session.SessionOptions = {
 if (process.env.NODE_ENV !== "development") {
   sessionOptions.cookie = {
     ...sessionOptions.cookie,
-    secure: true,
+    //secure: true,
     httpOnly: true,
     sameSite: 'none'
   };
