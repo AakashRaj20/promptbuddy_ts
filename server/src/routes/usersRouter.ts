@@ -1,12 +1,6 @@
 import { Router } from "express";
-import {
-  googleAuthController,
-  googleAuthCallbackController,
-  githubAuthController,
-  githubAuthCallbackController,
-  logoutController,
-  userDetailController,
-} from "../controller/users.controller";
+import { Request, Response } from "express";
+import { logout, userDetail } from "../controller/users.controller";
 import passport from "passport";
 import * as dotenv from "dotenv";
 
@@ -20,19 +14,19 @@ userRouter.get(
     scope: ["email", "profile"],
   })
 );
+
 userRouter.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: process.env.CLIENT_URL }),
-  (req, res) => {
-    res.redirect(process.env.CLIENT_URL);
+  passport.authenticate("google"),
+  (req: Request, res: Response) => {
+    res.redirect(process.env.CLIENT_URL as string);
   }
 );
-userRouter.get("/github", githubAuthController);
-userRouter.get("/github/callback", githubAuthCallbackController);
-userRouter.get(
-  "/signin/success",
-  userDetailController
-);
-userRouter.post("/logout", logoutController);
+
+userRouter.get("/logout", logout);
+
+userRouter.get("/signin/success", userDetail);
+
+
 
 export default userRouter;

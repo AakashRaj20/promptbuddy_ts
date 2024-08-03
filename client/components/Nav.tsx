@@ -29,9 +29,11 @@ const Nav = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post(`${baseUrl}/auth/logout`);
+      const res = await axios.get(`${baseUrl}/auth/logout`, {
+        withCredentials: true,
+      });
       console.log(res.data);
-      router.push("/sigin")
+      router.push("/signin")
     } catch (error) {
       console.log(error);
     }

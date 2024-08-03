@@ -18,163 +18,100 @@ const CALLBACK_URL = process.env.CALLBACK_URL as string;
 
 const GoogleStrategy = passportGoogle.Strategy;
 
-// Configure Google OAuth 2.0 strategy
 passport.use(
   new GoogleStrategy(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: `${CALLBACK_URL}/auth/google/callback`,
-      //state: true,
-      //passReqToCallback: true,
     },
     async (accessToken, refreshToken, profile, done) => {
-      const userExists = await User.findOne({
-        email: profile.emails?.[0].value,
-      });
-      if (!userExists) {
-        const newUser = await User.create({
-          email: profile.emails?.[0].value,
-          username: profile.displayName,
-          image: profile.photos?.[0].value,
-        });
-        if (newUser) {
-          done(null, newUser);
-        }
-      } else {
-        done(null, userExists);
-      }
-    }
-  )
-);
+      try {
+        // First, try to find a user with the given email
+        let user = await User.findOne({ email: profile.emails?.[0].value });
 
-passport.use(
-  new GithubStrategy(
-    {
-      clientID: GITHUB_CLIENT_ID,
-      clientSecret: GITHUB_CLIENT_SECRET,
-      callbackURL: `${CALLBACK_URL}/auth/github/callback`,
-    },
-    async (profile: any, done: any) => {
-      const userExists = await User.findOne({
-        email: profile.emails?.[0].value,
-      });
-      if (!userExists) {
-        const newUser = await User.create({
-          email: profile.emails?.[0].value,
-          username: profile.displayName,
-          image: profile.photos?.[0].value,
-        });
-        if (newUser) {
-          done(null, newUser);
+        // If user doesn't exist, create a new one
+        if (!user) {
+          user = await User.create({
+            email: profile.emails?.[0].value,
+            username: profile.displayName || `user${profile.id}`, // Fallback username if displayName is not available
+            image: profile.photos?.[0].value || "", // Use the profile photo if available
+          });
+
+          console.log("New user created:", user);
+        } else {
+          console.log("Existing user found:", user);
         }
-      } else {
-        done(null, userExists);
+
+        // Pass the user object to the done callback
+        done(null, user);
+      } catch (error) {
+        console.error("Error in Google authentication:", error);
+        done(error as Error, undefined);
       }
     }
   )
 );
 
 passport.serializeUser((user: any, done) => {
-  console.log("serialize user = " + user);
-  done(null, user.email);
+  done(null, user._id); // Use MongoDB _id
 });
 
-// passport.deserializeUser(async (id: string, done) => {
-//   // User.findById(id)
-//   //   .then((user) => {
-//   //     done(null, user);
-//   //   })
-//   //   .catch((err) => {
-//   //     done(err, null);
-//   //   });
-//   try {
-//     console.log("deserialize user = " + id);
-//     const user = await User.findOne({id});
-//     console.log(id + " = userid");
-
-//     done(null, user);
-//   } catch (error) {
-//     console.error("Error in deserializeUser:", error);
-//   }
-// });
-passport.deserializeUser(async (email: string, done) => {
-  console.log("deserialize user email = " + email);
-  try {
-    const user = await User.findOne({ email: email });
-    console.log("Deserialized user:", user);
-    if (user) {
-      return done(null, user); 
-    } else {
-      return done(null, false);
-    }
-  } catch (error) {
-    console.error("Error in deserializeUser:", error);
-    return done(error, null);
-  }
+passport.deserializeUser(async (id, done) => {
+  const user = await User.findById(id);
+  console.log("Deserialized user:", user);
+  
+  done(null, user);
 });
 
-export const googleAuthController = (req: Request, res: Response) => {
-  passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
-};
 
-export const githubAuthController = (req: Request, res: Response) => {
-  passport.authenticate("github", { scope: ["profile", "email"] })(req, res);
-};
-
-export const googleAuthCallbackController = async (
-  req: Request,
-  res: Response
-) => {
-  await passport.authenticate("google", {
-    failureRedirect: CLIENT_URL,
-  })(req, res, () => {
-    res.redirect(CLIENT_URL);
-  });
-};
-
-export const githubAuthCallbackController = async (
-  req: Request,
-  res: Response
-) => {
-  await passport.authenticate("github", {
-    failureRedirect: CLIENT_URL,
-  })(req, res, () => {
-    res.redirect(CLIENT_URL);
-  });
-};
-
-export const userDetailController = async (req: Request, res: Response) => {
-  try {
-    console.log("request session:", JSON.stringify(req.session, null, 2));
-    console.log("isAuthenticated:", req.isAuthenticated());
-    console.log("req.user:", req.user);
-
-    if (req.isAuthenticated() && req.user) {
-      console.log(req.isAuthenticated());
-      
-      console.log("user = " + req.user);
-      
-      return res.status(200).json({ session: req.user });
-    } else {
-      return res.status(401).json({ message: "You are not logged in" });
-    }
-  } catch (error) {
-    console.error("Error in userDetailController:", error);
-    return res.status(500).json({ message: "Something went wrong" });
-  }
-};
-
-export const logoutController = (req: Request, res: Response) => {
-  req.logout((error) => {
-    if (error) {
-      res.status(500).json({ message: "Something went wrong" });
-    }
-    req.session.destroy((error) => {
-      if (error) {
-        res.status(500).json({ message: "Something went wrong" });
+export const logout = (req: Request, res: Response) => {
+  // Check if the user is authenticated
+  console.log(req.isAuthenticated());
+  
+  if (req.isAuthenticated()) {
+    // Logout the user
+    req.logout((err) => {
+      if (err) {
+        // If there's an error during logout, send a 500 status
+        console.error("Error during logout:", err);
+        return res.status(500).json({ message: "Error logging out" });
       }
+
+      // Clear the session
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Error destroying session:", err);
+          return res.status(500).json({ message: "Error clearing session" });
+        }
+
+        // Redirect to the client URL or send a success response
+        //res.redirect(CLIENT_URL);
+        // Alternatively, you can send a JSON response:
+        return res.status(200).json({ message: "Logged out successfully" });
+      });
     });
-    //res.redirect(CLIENT_URL);
-  });
+  } else {
+    // If the user is not authenticated, just redirect or send a response
+    res.redirect(CLIENT_URL);
+    // Alternatively, you can send a JSON response:
+    // res.status(200).json({ message: "No user to log out" });
+  }
 };
+
+export const userDetail = async (req: Request, res: Response) => {
+  try {
+    console.log("User details:", req.user);
+    
+    if (req.isAuthenticated()) {
+      return res.status(200).json({"session": req.user});
+    } else {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+  } catch (error) {
+    console.error("Error getting user details:", error);
+    return res.status(500).json({ message: "Error getting user details" });
+  }
+};
+
+
