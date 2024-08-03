@@ -39,20 +39,28 @@ app.use(
   })
 );
 
-app.use(
-  session({
-    name: "promptBuddy",
-    secret: [process.env.SESSION_SECRET],
-    resave: false,
-    saveUninitialized: false,
-    //store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
-    cookie: {
-      //secure: process.env.NODE_ENV === "production",
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      //sameSite: "none",
-    },
-  })
-);
+
+const sessionOptions: session.SessionOptions = {
+  name: "promptBuddy",
+  secret: process.env.SESSION_SECRET as string,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+};
+
+// Add secure cookie options for production
+if (process.env.NODE_ENV !== "development") {
+  sessionOptions.cookie = {
+    ...sessionOptions.cookie,
+    secure: true,
+    httpOnly: true,
+    sameSite: 'none'
+  };
+}
+
+app.use(session(sessionOptions));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
