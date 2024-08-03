@@ -8,6 +8,9 @@ import {
   userDetailController,
 } from "../controller/users.controller";
 import passport from "passport";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const userRouter = Router();
 
@@ -19,9 +22,9 @@ userRouter.get(
 );
 userRouter.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "http:localhost:3000" }),
+  passport.authenticate("google", { failureRedirect: process.env.CLIENT_URL }),
   (req, res) => {
-    res.redirect("http://localhost:3000");
+    res.redirect(process.env.CLIENT_URL);
   }
 );
 userRouter.get("/github", githubAuthController);

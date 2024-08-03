@@ -4,7 +4,6 @@ import passportGoogle from "passport-google-oauth20";
 import { Strategy as GithubStrategy } from "passport-github2";
 import User from "../models/users";
 import * as dotenv from "dotenv";
-import { log } from "console";
 
 dotenv.config();
 
